@@ -1,26 +1,39 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import {EditorWrapper, EditAreaWrapper} from './style';
-import mockData from 'mock/mockData';
 import TextArea from 'Components/textArea';
 import Button from 'Components/button';
 import Header from 'Components/header';
 import Footer from 'Components/footer';
 
-const {id, title, content, name, lastName} = mockData[0];
 
-const Editor = () => {
-    const contentRef = useRef(content);
+const Editor = ({postToEdit, setPostToEdit, onUpdate}) => {
 
-    const Reset = () => {
-        console.log(contentRef.current.value);
+    const [post, setPost] = useState({...postToEdit});
+
+    useEffect(() => {
+        setPost({...postToEdit});
+    }, [postToEdit.id]);
+
+    const reset = () => {
+        setPost({...postToEdit});
     }
 
     const Save = () => {
-        console.log('SAVE');
+        const updatedObj = {
+            ...postToEdit, content: post.content
+        }
+        onUpdate(updatedObj);
     }
 
     const Cancel = () => {
-        console.log('CANCEL');
+        // setPost({});
+        setPostToEdit({});
+    }
+
+    const handlerTextChange = (text) => {
+        setPost((state) => {
+            return {...state, content: text};
+        });
     }
 
     return(
@@ -28,15 +41,16 @@ const Editor = () => {
             <EditAreaWrapper>
                 <Header>
                     <div>
-                        {id + '. ' + title + ', ' + name + ' ' + lastName}
+                        {post.title && post.id + '. ' + post.title + ', ' + post.author}
                     </div>
                     <Button
-                        onClick={Reset}
+                        onClick={reset}
                         text={'reset'}
                     />
                 </Header>
                 <TextArea
-                    content={contentRef}
+                    content={post.content}
+                    onChange={handlerTextChange}
                 />
                 <Footer>
                     <Button

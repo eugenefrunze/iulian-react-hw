@@ -3,14 +3,32 @@ import './style.css';
 import { mockData } from 'mock/mockData';
 import Post from 'Components/post';
 import Editor from 'Components/editor';
+import Modal from 'Components/modal';
 
 function App() {
   const [data, setData] = useState([]);
-  const [cardInEdit, setCardInEdit] = useState();
-
+  const [showPostModal, setShowPostModal] = useState(false);
   const [postToEdit, setPostToEdit] = useState({});
-  const handleAtPostForEdit = (post) => {
+
+  const confirmModalAction = (post) => {
     setPostToEdit(post);
+    setShowPostModal(false);
+  }
+
+  const cancelModalAction = (post) => {
+    setShowPostModal(false);
+  }
+
+  const handleAtPostForEdit = (post) => {
+    if(postToEdit.id !== post.id && postToEdit.id !== undefined) {
+      return setShowPostModal(post);
+    }
+    setPostToEdit({...post});
+  }
+
+  const handlePostUpdate = (updatedPost) => {
+    console.log(updatedPost);
+    // update data
   }
 
   const getData = () => {
@@ -23,30 +41,31 @@ function App() {
     getData();
   }, []);
 
-  const EditPost = (id) => {
-    setCardInEdit(id);
-    console.log('CIE ' + cardInEdit);
-  }
-
   return (
     <div className='App'>
 
       <div className='postsListWrapper'>
-        {data.map((post, index) => (
+        {data.map((post) => (
                 <Post
-                    key={`thekey${index}}`}
-                    id={post.id}
-                    isInEdit={false}
-                    title={post.title}
-                    content={post.content}
-                    name={post.name}
-                    lastName={post.lastName}
-                    onEdit={EditPost}
+                  post={{...post, author: post.name + ' ' + post.lastName}}
+                  key={post.id}
+                  isInEdit={post.id === postToEdit.id}
+                  onEdit={handleAtPostForEdit}
                 />
             ))}
       </div>
-
-      <Editor />
+      <Modal
+        confirmAction={confirmModalAction}
+        cancelAction={cancelModalAction}
+        isOpen={showPostModal}
+        closeModal={setShowPostModal}>
+          Hello there!
+      </Modal>
+      <Editor
+        postToEdit={postToEdit}
+        setPostToEdit={setPostToEdit}
+        onUpdate={handlePostUpdate}
+      />
     </div>
   );
 }

@@ -2,32 +2,36 @@ import {PostWrapper, ContentWrapper, TitleWrapper, Title, RegularText} from './s
 import Header from 'Components/header';
 import Button from 'Components/button';
 
-const Post = ({id, isInEdit, title, content, name, lastName, onEdit}) => {
+const Post = ({post, isInEdit, onEdit}) => {
+
+    const handlerOnPostEdit = () => {
+        onEdit(post);
+    }
+
     return(
         <PostWrapper
             isInEdit={isInEdit}>
             <Header>
                 <TitleWrapper>
                     <Title>
-                        {title}
+                        {post.title}
                     </Title>
                     <div style={{display: 'flex'}}>
                         <RegularText>
                             {'Author:'}
                         </RegularText>  
                         <Title>
-                            {[name, lastName].join(', ')}
+                            {post.author}
                         </Title> 
                     </div>
-                    
                 </TitleWrapper>
                 <Button
-                    // onClick={() => onEdit(id)}
+                    onClick={handlerOnPostEdit}
                     text={'edit'}
                 />
             </Header>
             <ContentWrapper>
-                <div>{content}</div>
+                <div>{post.content}</div>
                  
             </ContentWrapper>
         </PostWrapper>

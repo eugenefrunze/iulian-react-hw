@@ -5,8 +5,7 @@ const Button = (props) => {
     return(
         <ButtonWrapper
             onClick={onClick}
-            fontWeight={props.fontWeight}
-        >
+            fontWeight={props.fontWeight}>
             {text}
         </ButtonWrapper>
     )
